@@ -17,3 +17,38 @@ body {
     width: auto;
   }
 }
+
+.post-btn {
+  background: #f0f2f5;
+  border-radius: 25px;
+  text-align: left;
+  padding: 10px;
+  color: #65676b;
+  cursor: pointer;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+
+.post-btn:hover {
+  background: #e1e5eb;
+}
+
+.create-post-input {
+  resize: none;
+}
+
+.create-post-input::placeholder {
+  font-size: 18px;
+}
+
+.user-table {
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.user-table tr {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}

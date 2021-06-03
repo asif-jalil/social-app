@@ -35,7 +35,7 @@ const PostDetails = () => {
       <Container className="py-5 post-container">
          <Card className="border-0 shadow">
             <Card.Body>
-               <h4>Posted By <Link to={`/${postAuthor.username}`}>{ postAuthor.name }</Link></h4>
+               <h4>Posted By <Link to={`/profile/${postAuthor.username}`}>{ postAuthor.name }</Link></h4>
                <hr />
                <Card.Title>{title}</Card.Title>
                <Card.Text className="text-muted mb-5">{body}</Card.Text>

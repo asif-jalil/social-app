@@ -5,6 +5,7 @@ import Header from "./components/Header/Header";
 import Newsfeed from "./pages/Newsfeed";
 import PostDetails from "./pages/PostDetails";
 import Profile from "./pages/Profile";
+import Users from "./pages/Users";
 
 export const mainContext = createContext();
 
@@ -16,7 +17,7 @@ function App() {
    useEffect(() => {
       fetch("https://jsonplaceholder.typicode.com/posts")
          .then((res) => res.json())
-         .then((data) => setPosts(data));
+         .then((data) => setPosts(data.reverse()));
    }, []);
 
    useEffect(() => {
@@ -43,8 +44,11 @@ function App() {
                <Route path="/post/:postId">
                   <PostDetails></PostDetails>
                </Route>
-               <Route path="/:uname">
+               <Route path="/profile/:uname">
                   <Profile></Profile>
+               </Route>
+               <Route path="/users">
+                  <Users></Users>
                </Route>
             </Switch>
          </Router>

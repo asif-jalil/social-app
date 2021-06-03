@@ -14,18 +14,36 @@ const Post = (props) => {
    const titleRef = useRef();
    const bodyRef = useRef();
 
-   const handleChange = () => {
+   const handlePostEdit = () => {
       const newTitle = titleRef.current.value;
       const newBody = bodyRef.current.value;
-      
-      setPosts((prev) => {
-         const clonePosts = [].concat(prev);
-         const currentPost = clonePosts.find(post => post.id === id);
-         currentPost.title = newTitle;
-         currentPost.body = newBody;
-         return clonePosts;
-      });
-      setShow(false);
+
+      const updatedPost = {
+         title: newTitle,
+         body: newBody,
+         id: id,
+         userId: currentUser.id
+      }
+
+      fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+         method: "PATCH",
+         body: JSON.stringify(updatedPost),
+         headers: {
+            "Content-type": "application/json; charset=UTF-8",
+         },
+      })
+         .then((response) => response.json())
+         .then((data) => {
+            setPosts(prev => {
+               const clonePosts = [].concat(prev);
+               const currentPost = clonePosts.find((post) => post.id === id);
+               currentPost.title = data.title;
+               currentPost.body = data.body;
+               return clonePosts;
+            });
+            console.log(data)
+            setShow(false)
+         });
    };
 
    const handleClose = () => setShow(false);
@@ -41,17 +59,17 @@ const Post = (props) => {
 
    return (
       <Col md={postColumn} className="mb-4">
-         <Card className="border-0 shadow h-100">
+         <Card className="border-0 shadow-sm h-100">
             <Card.Body>
                <Card.Title>{title} </Card.Title>
                <Card.Subtitle className="mb-4">
                   Posted By{" "}
-                  <Link to={`/${author?.username}`}>{author?.name}</Link>
+                  <Link to={`/profile/${author?.username}`}>{author?.name}</Link>
                </Card.Subtitle>
                <Card.Text>{body}</Card.Text>
                <div className="d-flex justify-content-between align-items-center">
                   <Link to={`/post/${id}`}>See More</Link>
-                  {author.id === currentUser.id && (
+                  {author?.id === currentUser?.id && (
                      <div>
                         <Button variant="link" onClick={handleShow}>
                            <img width="15" src={editImg} alt="" />
@@ -65,7 +83,7 @@ const Post = (props) => {
                                  <Form.Group controlId="formTitle">
                                     <Form.Label>Title</Form.Label>
                                     <Form.Control
-                                       type="email"
+                                       type="text"
                                        placeholder="Title"
                                        defaultValue={title}
                                        ref={titleRef}
@@ -86,7 +104,10 @@ const Post = (props) => {
                               <Button variant="secondary" onClick={handleClose}>
                                  Close
                               </Button>
-                              <Button variant="primary" onClick={handleChange}>
+                              <Button
+                                 variant="primary"
+                                 onClick={handlePostEdit}
+                              >
                                  Save Changes
                               </Button>
                            </Modal.Footer>

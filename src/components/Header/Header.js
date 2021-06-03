@@ -13,8 +13,8 @@ const Header = () => {
          <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="ml-auto">
                <NavLink className="nav-link" exact to="/">News Feed</NavLink>
-               <NavLink className="nav-link" to={`/${currentUser.username}`}>Profile</NavLink>
-               <NavLink className="nav-link" to="/friends">Friends</NavLink>
+               <NavLink className="nav-link" to={`/profile/${currentUser.username}`}>Profile</NavLink>
+               <NavLink className="nav-link" to="/users">Users</NavLink>
             </Nav>
          </Navbar.Collapse>
       </Navbar>
