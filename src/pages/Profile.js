@@ -1,14 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import {
+   Button,
+   ButtonGroup,
+   Card,
+   Col,
+   Container,
+   Row
+} from "react-bootstrap";
 import { useParams } from "react-router";
 import { mainContext } from "../App";
 import Post from "../components/Post/Post";
+import UserInfo from "../components/UserProfile/UserInfo";
 
 const Profile = () => {
    const { uname } = useParams();
    const { users, posts } = useContext(mainContext);
    const [user, setUser] = useState({});
    const [userPost, setUserPost] = useState([]);
+
+   // get current posts
+   const [postPerPage] = useState(2);
+   const [currentPage, setCurrentPage] = useState(1);
+   const postEndIndex = currentPage * postPerPage;
+   const postStartIndex = postEndIndex - postPerPage;
+   const pages = [];
 
    useEffect(() => {
       setUser(users.filter((user) => user.username === uname)[0]);
@@ -17,6 +32,22 @@ const Profile = () => {
    useEffect(() => {
       setUserPost(posts.filter((post) => post.userId === user?.id));
    }, [user?.id, posts]);
+
+   const handleNext = () => {
+      if (postEndIndex < userPost.length) {
+         setCurrentPage(prev => prev + 1)
+      }
+   };
+
+   const handlePrev = () => {
+      if (postStartIndex > 1) {
+         setCurrentPage(prev => prev - 1)
+      }
+   };
+
+   for (let i = 1; i <= Math.ceil(userPost.length / postPerPage); i++) {
+      pages.push(i);
+   }
 
    return (
       <Container className="py-5">
@@ -37,35 +68,7 @@ const Profile = () => {
                <Card className="shadow-sm border-0 mb-4">
                   <Card.Body>
                      <Card.Title className="mb-4">Intro</Card.Title>
-                     <p className="mb-1">
-                        <b>Name:</b> {user?.name}
-                     </p>
-                     <p className="mb-1">
-                        <b>Company:</b> {user?.company?.name}
-                     </p>
-                     <p className="mb-1">
-                        <b>Email</b> {user?.email}
-                     </p>
-                     <p className="mb-1">
-                        <b>Phone</b> {user?.phone}
-                     </p>
-                     <p className="mb-1">
-                        <b>Address</b> {user?.address?.suite},{" "}
-                        {user?.address?.street}, {user?.address?.city}
-                     </p>
-                     <p className="mb-1">
-                        <b>Zip Code</b> {user?.address?.zipcode}
-                     </p>
-                     <p className="mb-1">
-                        <b>Website</b>{" "}
-                        <a
-                           href={`https://${user?.website}`}
-                           target="_blank"
-                           rel="noreferrer"
-                        >
-                           {user?.website}
-                        </a>
-                     </p>
+                     <UserInfo user={ user } />
                   </Card.Body>
                </Card>
             </Col>
@@ -80,7 +83,7 @@ const Profile = () => {
                </Card>
 
                <Row>
-                  {userPost.map((post) => (
+                  {userPost.slice(postStartIndex, postEndIndex).map((post) => (
                      <Post
                         key={post.id}
                         post={post}
@@ -89,6 +92,24 @@ const Profile = () => {
                      ></Post>
                   ))}
                </Row>
+
+               <div className="d-flex justify-content-between">
+                  <Button variant="secondary" onClick={handlePrev}>
+                     Prev
+                  </Button>
+                  <ButtonGroup className="mx-2" aria-label="First group">
+                     {
+                        pages.map((page) => (
+                           <Button variant="secondary" className={page === currentPage ? "active" : ""} onClick={()=> setCurrentPage(page)}>
+                              {page}
+                           </Button>
+                        ))
+                     }
+                  </ButtonGroup>
+                  <Button variant="secondary" onClick={handleNext}>
+                     Next
+                  </Button>
+               </div>
             </Col>
          </Row>
       </Container>

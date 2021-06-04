@@ -46,7 +46,19 @@ const Users = () => {
    };
 
    const handleNext = () => {
-      if (visible.end < users.length) {
+      const filteredUsers = users.filter((u) => {
+         if (searchTerm === "") {
+            return u;
+         } else if (
+            u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.website.toLowerCase().includes(searchTerm.toLowerCase())
+         ) {
+            return u;
+         }
+      });
+
+      if (visible.end < filteredUsers.length) {
          setVisible((prev) => {
             const load = { ...prev };
             load.start = prev.end;
@@ -131,19 +143,12 @@ const Users = () => {
                      if (searchTerm === "") {
                         return u;
                      } else if (
-                        u.name
-                           .toLowerCase()
-                           .includes(searchTerm.toLowerCase()) ||
-                        u.email
-                           .toLowerCase()
-                           .includes(searchTerm.toLowerCase()) ||
-                        u.website
-                           .toLowerCase()
-                           .includes(searchTerm.toLowerCase())
+                        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        u.website.toLowerCase().includes(searchTerm.toLowerCase())
                      ) {
                         return u;
                      }
-                     return true;
                   })
                   .slice(visible.start, visible.end)
                   .map((user) => (
