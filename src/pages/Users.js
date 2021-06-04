@@ -46,6 +46,7 @@ const Users = () => {
    };
 
    const handleNext = () => {
+      // eslint-disable-next-line array-callback-return
       const filteredUsers = users.filter((u) => {
          if (searchTerm === "") {
             return u;
@@ -139,6 +140,7 @@ const Users = () => {
             </thead>
             <tbody>
                {(sortMethod === "name" ? sortedByName() : sortedByEmail())
+                  // eslint-disable-next-line array-callback-return
                   .filter((u) => {
                      if (searchTerm === "") {
                         return u;
