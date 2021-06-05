@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, ButtonGroup, Container, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { mainContext } from "../App";
@@ -13,26 +13,55 @@ const Users = () => {
    const [sortType, setSortType] = useState("asc");
    const [sortMethod, setSortMethod] = useState("name");
 
-   const handleNameSort = (type) => {
-      setSortMethod("name");
+   useEffect(() => {
+      const vis = localStorage.getItem("visible");
+      const perP = localStorage.getItem("perPage");
+      const searchT = localStorage.getItem("searchTerm");
+      const sortT = localStorage.getItem("sortType");
+      const sortM = localStorage.getItem("sortMethod");
+
+      if (vis) {
+         setVisible(JSON.parse(vis));
+      }
+
+      if (perP) {
+         setPerPage(JSON.parse(perP));
+      }
+      if (searchT) {
+         setSearchTerm(JSON.parse(searchT));
+      }
+
+      if (sortT) {
+         setSortType(JSON.parse(sortT));
+      }
+
+      if (sortM) {
+         setSortMethod(JSON.parse(sortM));
+      }
+   }, []);
+
+   useEffect(() => {
+      localStorage.setItem("visible", JSON.stringify(visible));
+      localStorage.setItem("perPage", JSON.stringify(perPage));
+      localStorage.setItem("searchTerm", JSON.stringify(searchTerm));
+      localStorage.setItem("sortType", JSON.stringify(sortType));
+      localStorage.setItem("sortMethod", JSON.stringify(sortMethod));
+   }, [visible, perPage, searchTerm, sortType, sortMethod]);
+
+   const handleSort = (type, method) => {
+      setSortMethod(method);
       setSortType(type);
    };
 
-   const handleEmailSort = (type) => {
-      setSortMethod("email");
-      setSortType(type);
-   };
-
-   const sortedByName = () =>
+   const sorted = (method) =>
+      // eslint-disable-next-line array-callback-return
       users.sort((a, b) => {
          const isReversed = sortType === "asc" ? 1 : -1;
-         return isReversed * a.name.localeCompare(b.name);
-      });
-
-   const sortedByEmail = () =>
-      users.sort((a, b) => {
-         const isReversed = sortType === "asc" ? 1 : -1;
-         return isReversed * a.email.localeCompare(b.email);
+         if (method === "name") {
+            return isReversed * a.name.localeCompare(b.name);
+         } else if (method === "email") {
+            return isReversed * a.email.localeCompare(b.email);
+         }
       });
 
    const handlePerPage = (e) => {
@@ -82,16 +111,15 @@ const Users = () => {
 
    return (
       <Container className="py-5 post-container">
-         <div>
-            <Form.Group>
-               <Form.Control
-                  type="text"
-                  name="search"
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search User with name or email or website..."
-               />
-            </Form.Group>
-         </div>
+         <Form.Group>
+            <Form.Control
+               type="text"
+               name="search"
+               onChange={(e) => setSearchTerm(e.target.value)}
+               defaultValue={searchTerm && searchTerm}
+               placeholder="Search User with name or email or website..."
+            />
+         </Form.Group>
          <table className="table table-bordered">
             <thead className="table-dark">
                <tr>
@@ -101,14 +129,14 @@ const Users = () => {
                         {sortType === "asc" && sortMethod === "name" ? (
                            <img
                               src={downIcon}
-                              onClick={() => handleNameSort("desc")}
+                              onClick={() => handleSort("desc", "name")}
                               alt=""
                               width="14"
                            />
                         ) : (
                            <img
                               src={upIcon}
-                              onClick={() => handleNameSort("asc")}
+                              onClick={() => handleSort("asc", "name")}
                               alt=""
                               width="14"
                            />
@@ -121,14 +149,14 @@ const Users = () => {
                         {sortType === "asc" && sortMethod === "email" ? (
                            <img
                               src={downIcon}
-                              onClick={() => handleEmailSort("desc")}
+                              onClick={() => handleSort("desc", "email")}
                               alt=""
                               width="14"
                            />
                         ) : (
                            <img
                               src={upIcon}
-                              onClick={() => handleEmailSort("asc")}
+                              onClick={() => handleSort("asc", "email")}
                               alt=""
                               width="14"
                            />
@@ -139,15 +167,21 @@ const Users = () => {
                </tr>
             </thead>
             <tbody>
-               {(sortMethod === "name" ? sortedByName() : sortedByEmail())
+               {sorted(sortMethod)
                   // eslint-disable-next-line array-callback-return
                   .filter((u) => {
                      if (searchTerm === "") {
                         return u;
                      } else if (
-                        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        u.website.toLowerCase().includes(searchTerm.toLowerCase())
+                        u.name
+                           .toLowerCase()
+                           .includes(searchTerm.toLowerCase()) ||
+                        u.email
+                           .toLowerCase()
+                           .includes(searchTerm.toLowerCase()) ||
+                        u.website
+                           .toLowerCase()
+                           .includes(searchTerm.toLowerCase())
                      ) {
                         return u;
                      }
