@@ -1,12 +1,15 @@
 import React, { useContext, useState } from "react";
-import { Button, Card, Container, Form, Modal, Row } from "react-bootstrap";
+import { Button, Card, Container, Form, Modal, Row, Toast } from "react-bootstrap";
 import { mainContext } from "../App";
 import Post from "../components/Post/Post";
+import checkIcon from "../images/check.png";
 
 const Newsfeed = () => {
    const { posts, currentUser, setPosts } = useContext(mainContext);
    const [visible, setVisible] = useState(10);
    const [show, setShow] = useState(false);
+   const [showToast, setShowToast] = useState(false);
+   const [postStatus, setPostStatus] = useState("")
    const [postCreate, setPostCreate] = useState({});
 
    const handleClose = () => setShow(false);
@@ -35,7 +38,8 @@ const Newsfeed = () => {
                   const allPost = [data, ...prev];
                   return allPost;
                });
-               setShow(false)
+               setShow(false);
+               handleToast("created");
             });
          
       }
@@ -48,10 +52,40 @@ const Newsfeed = () => {
       setPostCreate(newPost);
    };
 
+   const handleToast = (status) => {
+      setShowToast(true);
+      setPostStatus(status)
+   };
 
 
    return (
       <Container className="py-5 post-container">
+         <Toast
+            style={{
+               position: "fixed",
+               top: 10,
+               right: 10,
+               zIndex: 99,
+            }}
+            onClose={() => setShowToast(false)}
+            show={showToast}
+            delay={3000}
+            autohide
+         >
+            <Toast.Header>
+               <img
+                  src={checkIcon}
+                  className="rounded mr-2"
+                  alt=""
+                  width="16px"
+               />
+               <strong className="mr-auto">Post { postStatus }</strong>
+               <small>Just Now</small>
+            </Toast.Header>
+            <Toast.Body>
+               <span className="h6">{ `Your Post has been ${postStatus} successfully` }</span>
+            </Toast.Body>
+         </Toast>
          <Card className="border-0 shadow-sm mb-4">
             <Card.Body>
                <button className="btn post-btn w-100" onClick={handleShow}>
@@ -97,7 +131,7 @@ const Newsfeed = () => {
          </Card>
          <Row>
             {posts.slice(0, visible).map((post) => (
-               <Post key={post.id} post={post} col={12}></Post>
+               <Post key={post.id} post={post} col={12} handleToast={handleToast}></Post>
             ))}
          </Row>
          {visible < posts.length && (

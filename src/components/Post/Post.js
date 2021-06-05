@@ -14,6 +14,13 @@ const Post = (props) => {
    const titleRef = useRef();
    const bodyRef = useRef();
 
+   useEffect(() => {
+      setAuthor(users.filter((user) => user.id === userId)[0]);
+   }, [userId, users]);
+
+   const handleClose = () => setShow(false);
+   const handleShow = () => setShow(true);
+
    const handlePostEdit = () => {
       const newTitle = titleRef.current.value;
       const newBody = bodyRef.current.value;
@@ -41,20 +48,14 @@ const Post = (props) => {
                currentPost.body = data.body;
                return clonePosts;
             });
-            console.log(data)
-            setShow(false)
+            setShow(false);
+            props.handleToast("updated");
          });
    };
 
-   const handleClose = () => setShow(false);
-   const handleShow = () => setShow(true);
-
-   useEffect(() => {
-      setAuthor(users.filter((user) => user.id === userId)[0]);
-   }, [userId, users]);
-
    const handlePostDelete = () => {
       setPosts((prev) => prev.filter((post) => post.id !== id));
+      props.handleToast("deleted");
    };
 
    return (

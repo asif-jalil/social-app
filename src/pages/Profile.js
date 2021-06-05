@@ -5,16 +5,20 @@ import {
    Card,
    Col,
    Container,
-   Row
+   Row,
+   Toast
 } from "react-bootstrap";
 import { useParams } from "react-router";
 import { mainContext } from "../App";
 import Post from "../components/Post/Post";
 import UserInfo from "../components/UserProfile/UserInfo";
+import checkIcon from "../images/check.png";
 
 const Profile = () => {
    const { uname } = useParams();
    const { users, posts } = useContext(mainContext);
+   const [showToast, setShowToast] = useState(false);
+   const [postStatus, setPostStatus] = useState("")
    const [user, setUser] = useState({});
    const [userPost, setUserPost] = useState([]);
 
@@ -35,14 +39,19 @@ const Profile = () => {
 
    const handleNext = () => {
       if (postEndIndex < userPost.length) {
-         setCurrentPage(prev => prev + 1)
+         setCurrentPage((prev) => prev + 1);
       }
    };
 
    const handlePrev = () => {
       if (postStartIndex > 1) {
-         setCurrentPage(prev => prev - 1)
+         setCurrentPage((prev) => prev - 1);
       }
+   };
+
+   const handleToast = (status) => {
+      setShowToast(true);
+      setPostStatus(status)
    };
 
    for (let i = 1; i <= Math.ceil(userPost.length / postPerPage); i++) {
@@ -51,6 +60,32 @@ const Profile = () => {
 
    return (
       <Container className="py-5">
+         <Toast
+            style={{
+               position: "fixed",
+               top: 10,
+               right: 10,
+               zIndex: 99,
+            }}
+            onClose={() => setShowToast(false)}
+            show={showToast}
+            delay={3000}
+            autohide
+         >
+            <Toast.Header>
+               <img
+                  src={checkIcon}
+                  className="rounded mr-2"
+                  alt=""
+                  width="16px"
+               />
+               <strong className="mr-auto">Post { postStatus }</strong>
+               <small>Just Now</small>
+            </Toast.Header>
+            <Toast.Body>
+               <span className="h6">{ `Your Post has been ${postStatus} successfully` }</span>
+            </Toast.Body>
+         </Toast>
          <Card className="text-center shadow-sm border-0 mb-4">
             <Card.Body>
                <h2>
@@ -68,7 +103,7 @@ const Profile = () => {
                <Card className="shadow-sm border-0 mb-4">
                   <Card.Body>
                      <Card.Title className="mb-4">Intro</Card.Title>
-                     <UserInfo user={ user } />
+                     <UserInfo user={user} />
                   </Card.Body>
                </Card>
             </Col>
@@ -89,6 +124,7 @@ const Profile = () => {
                         post={post}
                         setUserPost={setUserPost}
                         col={6}
+                        handleToast={handleToast}
                      ></Post>
                   ))}
                </Row>
@@ -98,13 +134,15 @@ const Profile = () => {
                      Prev
                   </Button>
                   <ButtonGroup className="mx-2" aria-label="First group">
-                     {
-                        pages.map((page) => (
-                           <Button variant="secondary" className={page === currentPage ? "active" : ""} onClick={()=> setCurrentPage(page)}>
-                              {page}
-                           </Button>
-                        ))
-                     }
+                     {pages.map((page) => (
+                        <Button
+                           variant="secondary"
+                           className={page === currentPage ? "active" : ""}
+                           onClick={() => setCurrentPage(page)}
+                        >
+                           {page}
+                        </Button>
+                     ))}
                   </ButtonGroup>
                   <Button variant="secondary" onClick={handleNext}>
                      Next
