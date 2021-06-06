@@ -43,7 +43,7 @@ body {
   font-size: 18px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 575px) {
   .user-table {
     display: block;
     width: 100%;
