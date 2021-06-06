@@ -120,7 +120,7 @@ const Users = () => {
                placeholder="Search User with name or email or website..."
             />
          </Form.Group>
-         <table className="table table-bordered">
+         <table className="table table-bordered table-responsive">
             <thead className="table-dark">
                <tr>
                   <th className="">
@@ -233,9 +233,9 @@ const Users = () => {
                         className="form-control-sm"
                         onChange={handlePerPage}
                      >
-                        <option value="3">3</option>
-                        <option value="5">5</option>
-                        <option value={users.length}>All</option>
+                        <option selected={ perPage === 3 && "selected" } value="3">3</option>
+                        <option selected={ perPage === 5 && "selected" } value="5">5</option>
+                        <option selected={ perPage === users.length && "selected" } value={users.length}>All</option>
                      </select>
                   </td>
                </tr>

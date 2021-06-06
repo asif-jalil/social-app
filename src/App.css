@@ -52,3 +52,9 @@ body {
   border: 1px solid #ddd;
   border-collapse: collapse;
 }
+
+.table td,
+.table th {
+  font-size: 13px;
+  padding: 0.75rem .5rem;
+}
