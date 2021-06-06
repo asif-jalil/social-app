@@ -43,18 +43,17 @@ body {
   font-size: 18px;
 }
 
-.user-table {
-  width: 100%;
-  border: 1px solid #ddd;
-}
+@media (max-width: 767px) {
+  .user-table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+  }
 
-.user-table tr {
-  border: 1px solid #ddd;
-  border-collapse: collapse;
-}
-
-.table td,
-.table th {
-  font-size: 13px;
-  padding: 0.75rem .5rem;
+  .user-table td,
+  .user-table th {
+    width: 33.33%;
+    font-size: 13px;
+    padding: 0.75rem .5rem;
+  }
 }

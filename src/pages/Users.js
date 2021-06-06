@@ -120,7 +120,7 @@ const Users = () => {
                placeholder="Search User with name or email or website..."
             />
          </Form.Group>
-         <table className="table table-bordered table-responsive">
+         <table className="table table-bordered user-table">
             <thead className="table-dark">
                <tr>
                   <th className="">
