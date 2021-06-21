@@ -2,7 +2,7 @@
 
 ---
 
-[Live Demo](https://socialapp-by-asif.netlify.app/)
+[Live Site](https://socialapp-by-asif.netlify.app/)
 
 SOCIAL APP is a **Social Website** like facebook, twitter.  It is build with **react**. It is tested on Google Crome, Mozilla Firefox. If it doesn't work please create an issue.
 
